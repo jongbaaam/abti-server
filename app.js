@@ -4,9 +4,12 @@ const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
+const connectDataBase = require("./db/mongoose");
 const indexRouter = require("./routes/index");
 
 const app = express();
+
+connectDataBase();
 
 app.use(logger("dev"));
 app.use(express.json());
