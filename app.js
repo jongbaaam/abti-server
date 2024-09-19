@@ -3,20 +3,28 @@ const express = require("express");
 const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const cors = require("cors");
 
 const connectDataBase = require("./db/mongoose");
-const indexRouter = require("./routes/index");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
 connectDataBase();
+
+// 개발 환경을 위한 출처 추가
+const corsOption = {
+  origin: ["http://localhost:5173"],
+  credentials: true,
+};
+app.use(cors(corsOption));
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/", indexRouter);
+app.use("/auth", authRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
