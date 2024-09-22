@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 
+const { CLIENT_ORIGIN } = require("./constants/config");
 const connectDataBase = require("./db/mongoose");
 const authRouter = require("./routes/auth");
 
@@ -12,9 +13,8 @@ const app = express();
 
 connectDataBase();
 
-// 개발 환경을 위한 출처 추가
 const corsOption = {
-  origin: ["http://localhost:5173"],
+  origin: [CLIENT_ORIGIN],
   credentials: true,
 };
 app.use(cors(corsOption));
