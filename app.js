@@ -7,11 +7,18 @@ const cors = require("cors");
 
 const { CLIENT_ORIGIN } = require("./constants/config");
 const connectDataBase = require("./db/mongoose");
+
 const authRouter = require("./routes/auth");
+const projectRouter = require("./routes/project");
 
 const app = express();
 
 connectDataBase();
+
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 const corsOption = {
   origin: [CLIENT_ORIGIN],
@@ -19,12 +26,8 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
 app.use("/auth", authRouter);
+app.use("/users", projectRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
