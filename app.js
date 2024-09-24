@@ -10,6 +10,7 @@ const connectDataBase = require("./db/mongoose");
 
 const authRouter = require("./routes/auth");
 const projectRouter = require("./routes/project");
+const testRouter = require("./routes/test");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(cors(corsOption));
 
 app.use("/auth", authRouter);
 app.use("/users", projectRouter);
+app.use("/users", testRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
