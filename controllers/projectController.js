@@ -12,7 +12,6 @@ exports.getProjectListByUserId = async (req, res, next) => {
       projectListByUserId,
     });
   } catch (error) {
-    console.log(error);
     next(ERROR_CASE.SERVER_ERROR);
   }
 };
@@ -28,7 +27,7 @@ exports.registerProjectByUserId = async (req, res, next) => {
       projectName,
     });
 
-    res.json({ registeredProject });
+    res.status(201).json({ registeredProject });
   } catch (error) {
     next(ERROR_CASE.SERVER_ERROR);
   }
