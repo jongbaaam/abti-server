@@ -4,6 +4,12 @@ const router = express.Router();
 const { isLoggedIn } = require("../middleware/verifyToken");
 const projectController = require("../controllers/projectController");
 
+router.get(
+  "/:userId/projects",
+  isLoggedIn,
+  projectController.getProjectListByUserId,
+);
+
 router.post(
   "/:userId/projects",
   isLoggedIn,

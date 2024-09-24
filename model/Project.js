@@ -15,12 +15,6 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },
-  tests: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "test",
-    },
-  ],
 });
 
 module.exports = mongoose.model("Project", projectSchema);

@@ -1,6 +1,22 @@
 const projectService = require("../services/projectService");
 const ERROR_CASE = require("../constants/errorCase");
 
+exports.getProjectListByUserId = async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const projectListByUserId =
+      await projectService.getProjectListByUserId(userId);
+
+    res.json({
+      projectListByUserId,
+    });
+  } catch (error) {
+    console.log(error);
+    next(ERROR_CASE.SERVER_ERROR);
+  }
+};
+
 exports.registerProjectByUserId = async (req, res, next) => {
   try {
     const { userId } = req.params;

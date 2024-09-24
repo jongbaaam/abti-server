@@ -13,3 +13,11 @@ exports.registerProjectByUserId = async ({
 
   return registeredProject;
 };
+
+exports.getProjectListByUserId = async userId => {
+  const projectListByUserId = await Project.find({
+    user: userId,
+  });
+
+  return projectListByUserId;
+};
