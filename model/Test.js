@@ -50,7 +50,21 @@ const testSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "project",
   },
-  specimenStatistics: [specimenStatisticsSchema],
+  specimenStatistics: {
+    type: [specimenStatisticsSchema],
+    default: [
+      {
+        groupName: "A",
+        visitorSize: 0,
+        conversionsSize: 0,
+      },
+      {
+        groupName: "B",
+        visitorSize: 0,
+        conversionsSize: 0,
+      },
+    ],
+  },
 });
 
 module.exports = mongoose.model("Test", testSchema);
