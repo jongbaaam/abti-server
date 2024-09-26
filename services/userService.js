@@ -2,27 +2,23 @@ const { v4: uuidv4 } = require("uuid");
 
 const User = require("../model/User");
 
-exports.upsertUserByToken = async ({
+exports.createUserByToken = async ({
   email: userEmail,
   name: userName,
   picture: photoUrl,
 }) => {
-  const upsertUser = await User.findOneAndUpdate(
-    {
-      userEmail,
-    },
-    {
-      userEmail,
-      userName,
-      photoUrl,
-      apiKey: uuidv4(),
-    },
-    {
-      returnDocument: "after",
-      upsert: true,
-      new: true,
-    },
-  ).lean();
+  const registeredUser = await User.findOne({
+    userEmail,
+  });
 
-  return upsertUser;
+  if (registeredUser) {
+    return registeredUser;
+  }
+
+  return await new User({
+    userEmail,
+    userName,
+    photoUrl,
+    apiKey: uuidv4(),
+  }).save();
 };

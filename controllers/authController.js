@@ -3,11 +3,12 @@ const userService = require("../services/userService");
 
 const ERROR_CASE = require("../constants/errorCase");
 
-exports.logInAndUpsertUserByIdToken = async (req, res, next) => {
+exports.logInByIdToken = async (req, res, next) => {
   try {
     const { idToken } = req.body;
     const decodedIdToken = await authService.decodeGoogleToken(idToken);
-    const registeredUser = await userService.upsertUserByToken(decodedIdToken);
+
+    const registeredUser = await userService.createUserByToken(decodedIdToken);
 
     res.json({ userInfo: registeredUser });
   } catch (error) {
