@@ -5,7 +5,7 @@ const { isLoggedIn } = require("../middleware/verifyToken");
 const testController = require("../controllers/testController");
 
 router.get(
-  "/:userId/projects/:projectId",
+  "/:userId/projects/:projectId/tests",
   isLoggedIn,
   testController.getTestListByProjectId,
 );
