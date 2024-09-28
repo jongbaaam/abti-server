@@ -8,6 +8,12 @@ exports.getTestListByProjectId = async projectId => {
   return testListByProjectId;
 };
 
+exports.findTestByTestId = async testId => {
+  const foundTest = await Test.findById(testId);
+
+  return foundTest;
+};
+
 exports.createTestByProjectId = async ({ projectId, testFormData }) => {
   const createdTest = await new Test({
     ...testFormData,

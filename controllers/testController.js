@@ -13,7 +13,18 @@ exports.getTestListByProjectId = async (req, res, next) => {
       testListByProjectId,
     });
   } catch (error) {
-    console.error(error);
+    next(ERROR_CASE.SERVER_ERROR);
+  }
+};
+
+exports.getTestByTestId = async (req, res, next) => {
+  const { testId } = req.params;
+
+  try {
+    const foundTestById = await testService.findTestByTestId(testId);
+
+    res.json(foundTestById);
+  } catch (error) {
     next(ERROR_CASE.SERVER_ERROR);
   }
 };

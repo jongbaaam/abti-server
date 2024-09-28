@@ -10,6 +10,12 @@ router.get(
   testController.getTestListByProjectId,
 );
 
+router.get(
+  "/:userId/projects/:projectId/tests/:testId",
+  isLoggedIn,
+  testController.getTestByTestId,
+);
+
 router.post(
   "/:userId/projects/:projectId/tests",
   isLoggedIn,
