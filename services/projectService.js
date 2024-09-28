@@ -5,9 +5,12 @@ exports.registerProjectByUserId = async ({
   projectName,
   projectUrl,
 }) => {
+  const removedLastCharSlashUrl =
+    projectUrl.slice(-1) === "/" ? projectUrl.slice(0, -1) : projectUrl;
+
   const registeredProject = await new Project({
     projectName,
-    projectUrl,
+    projectUrl: removedLastCharSlashUrl,
     user: userId,
   }).save();
 
@@ -20,4 +23,12 @@ exports.getProjectListByUserId = async userId => {
   });
 
   return projectListByUserId;
+};
+
+exports.validateProjectByProjectUrl = async projectUrl => {
+  const foundProject = await Project.find({
+    projectUrl,
+  });
+
+  return Boolean(foundProject);
 };

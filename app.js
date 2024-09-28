@@ -8,6 +8,8 @@ const cors = require("cors");
 const { CLIENT_ORIGIN } = require("./constants/config");
 const connectDataBase = require("./db/mongoose");
 
+const projectService = require("./services/projectService");
+
 const authRouter = require("./routes/auth");
 const projectRouter = require("./routes/project");
 const testRouter = require("./routes/test");
@@ -22,7 +24,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 const corsOption = {
-  origin: [CLIENT_ORIGIN],
+  origin: async (origin, callback) => {
+    if (CLIENT_ORIGIN === origin) {
+      return callback(null, true);
+    }
+
+    const isValidationUrl =
+      await projectService.validateProjectByProjectUrl(origin);
+
+    if (isValidationUrl) {
+      return callback(null, true);
+    }
+
+    callback(new Error("허용되지 않은 접근입니다."));
+  },
   credentials: true,
 };
 app.use(cors(corsOption));
