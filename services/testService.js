@@ -16,3 +16,20 @@ exports.createTestByProjectId = async ({ projectId, testFormData }) => {
 
   return createdTest;
 };
+
+exports.increaseSpecimenStatisticsByGroupName = async ({
+  testId,
+  groupName,
+  targetProperty,
+  value,
+}) => {
+  const foundTest = await Test.findById(testId);
+
+  const targetGroup = foundTest.specimenStatistics.find(element => {
+    return element.groupName === groupName;
+  });
+
+  targetGroup[targetProperty] += value;
+
+  await foundTest.save();
+};
