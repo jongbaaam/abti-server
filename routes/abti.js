@@ -5,7 +5,7 @@ const router = express.Router();
 const projectService = require("../services/projectService");
 const testController = require("../controllers/testController");
 
-router.get("/module", async (req, res) => {
+router.get("/abtiClient", async (req, res) => {
   const projectUrl = req.get("origin");
 
   const isValidationUrl =
