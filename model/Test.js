@@ -19,6 +19,24 @@ const specimenStatisticsSchema = new mongoose.Schema({
   },
 });
 
+const testParticipantsSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  testGroup: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  isConversions: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+});
+
 const testSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -26,6 +44,16 @@ const testSchema = new mongoose.Schema({
     trim: true,
   },
   description: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  targetElementId: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  pagePath: {
     type: String,
     required: true,
     trim: true,
@@ -49,6 +77,9 @@ const testSchema = new mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "project",
+  },
+  testParticipants: {
+    type: [testParticipantsSchema],
   },
   specimenStatistics: {
     type: [specimenStatisticsSchema],
