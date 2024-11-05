@@ -1,5 +1,8 @@
 const CONSTANT = {
-  PATCH_ACTION_TYPE: { INCREASE: "increase" },
+  TRACK_TYPE: {
+    VISITATION: "visitation",
+    CONVERSION: "conversion",
+  },
 };
 
 module.exports = CONSTANT;
