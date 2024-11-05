@@ -1,26 +1,21 @@
 const express = require("express");
-const path = require("path");
 const router = express.Router();
 
-const projectService = require("../services/projectService");
+const abtiController = require("../controllers/abtiController");
 const testController = require("../controllers/testController");
 
-router.get("/abtiClient", async (req, res) => {
-  const projectUrl = req.get("origin");
+router.get("/abti-client", abtiController.getAbtiClientCode);
 
-  const isValidationUrl =
-    await projectService.validateProjectByProjectUrl(projectUrl);
+router.get(
+  "/users/configuration",
+  abtiController.getUserConfigurationByAbtiUserId,
+);
 
-  if (isValidationUrl) {
-    res.sendFile("abtiClient.js", {
-      root: path.join(__dirname, "../abti"),
-    });
-  }
-});
+router.get("/tests/:testId", testController.getTestInformationByTestId);
 
 router.patch(
-  "/tests/:testId/specimenStatistics",
-  testController.updateSpecimenStatisticsByGroupName,
+  "/tests/:testId/specimen-statistics",
+  testController.updateSpecimenStatisticsByTrackType,
 );
 
 module.exports = router;
