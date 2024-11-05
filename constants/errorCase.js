@@ -3,6 +3,14 @@ const ERROR_CASE = {
     status: 401,
     message: "유효하지 않은 토큰입니다.",
   },
+  INVALID_PROJECT: {
+    status: 401,
+    message: "유효하지 않은 프로젝트입니다.",
+  },
+  INVALID_USER: {
+    status: 401,
+    message: "유효하지 않은 사용자 식별 정보입니다.",
+  },
   SERVER_ERROR: {
     status: 500,
     message: "내부 서버 오류가 발생하였습니다.",
