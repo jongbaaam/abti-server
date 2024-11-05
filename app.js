@@ -48,6 +48,12 @@ app.use("/users", projectRouter);
 app.use("/users", testRouter);
 app.use("/abti", abtiRouter);
 
+app.use("/", (req, res, next) => {
+  res.json({
+    message: "Server Health Check!!",
+  });
+});
+
 app.use(function (req, res, next) {
   next(createError(404));
 });
