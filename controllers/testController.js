@@ -47,24 +47,27 @@ exports.createTestByProjectId = async (req, res, next) => {
   }
 };
 
-exports.updateSpecimenStatisticsByGroupName = async (req, res, next) => {
+exports.updateSpecimenStatisticsByTrackType = async (req, res, next) => {
   const { testId } = req.params;
   const { groupName, action } = req.body;
-  console.log(action);
-  const { type, targetProperty, value } = action;
+  const { abtiUserId } = req.cookies;
+
+  if (!abtiUserId) {
+    return next(ERROR_CASE.INVALID_USER);
+  }
+
   try {
-    if (type === PATCH_ACTION_TYPE.INCREASE) {
+    const resultMessage =
       await testService.increaseSpecimenStatisticsByGroupName({
         testId,
+        abtiUserId,
         groupName,
-        targetProperty,
-        value,
+        action,
       });
 
-      res.status(200).json({
-        success: true,
-      });
-    }
+    res.status(200).json({
+      message: resultMessage,
+    });
   } catch (error) {
     next(ERROR_CASE.SERVER_ERROR);
   }
