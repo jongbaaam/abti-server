@@ -1,6 +1,7 @@
 const testService = require("../services/testService");
+const projectService = require("../services/projectService");
+
 const ERROR_CASE = require("../constants/errorCase");
-const { PATCH_ACTION_TYPE } = require("../constants/constant");
 
 exports.getTestListByProjectId = async (req, res, next) => {
   const { projectId } = req.params;
@@ -64,6 +65,29 @@ exports.updateSpecimenStatisticsByGroupName = async (req, res, next) => {
         success: true,
       });
     }
+  } catch (error) {
+    next(ERROR_CASE.SERVER_ERROR);
+  }
+};
+
+exports.getTestInformationByTestId = async (req, res, next) => {
+  const { testId } = req.params;
+
+  try {
+    const { pagePath, targetElementId, _id, projectId } =
+      await testService.findTestByTestId(testId);
+
+    const { projectUrl } =
+      await projectService.getProjectByProjectId(projectId);
+
+    const testInformation = {
+      targetElementId,
+      pagePath,
+      pageOrigin: projectUrl,
+      testId: _id,
+    };
+
+    res.json(testInformation);
   } catch (error) {
     next(ERROR_CASE.SERVER_ERROR);
   }

@@ -25,6 +25,12 @@ exports.getProjectListByUserId = async userId => {
   return projectListByUserId;
 };
 
+exports.getProjectByProjectId = async projectId => {
+  const projectByProjectId = await Project.findById(projectId);
+
+  return projectByProjectId;
+};
+
 exports.validateProjectByProjectUrl = async projectUrl => {
   const foundProject = await Project.find({
     projectUrl,
