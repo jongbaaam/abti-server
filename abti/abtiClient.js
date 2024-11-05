@@ -1,93 +1,156 @@
 (() => {
-  const HASH_VALUE_MAX = 10000;
-  const ABTI_SERVER_ORIGIN = "http://localhost:3000";
-  const DISTRIBUTION_STANDARD_VALUE = 5000;
+  const ABTI_SERVER_ORIGIN = "https://api.abti.store";
 
   window.abtiClient = window.abtiClient || {};
 
-  abtiClient.distributeGroupByUserId = async (testId, userId) => {
-    const hashValue = getHashValue(userId, HASH_VALUE_MAX);
-    const distributedGroup =
-      hashValue > DISTRIBUTION_STANDARD_VALUE ? "A" : "B";
+  if (abtiClient.initQueue) {
+    processAbtiInitialization(abtiClient.initQueue).then(() => {
+      handlePageVisit();
+    });
+  }
 
-    sessionStorage.setItem("distributedGroup", distributedGroup);
+  abtiClient.initializeAbti = async (...args) => {
+    abtiClient.initQueue = abtiClient.initQueue || args;
 
-    try {
-      const response = await updateSpecimenStatisticsByAction(testId, {
-        type: "increase",
-        targetProperty: "visitorSize",
-        value: 1,
-      });
-    } catch (error) {
-      console.error("그룹 분배 과정 중 에러가 발생하였습니다.", error);
-    }
+    await processAbtiInitialization(abtiClient.initQueue);
+
+    handlePageVisit();
   };
 
-  abtiClient.trackConversions = async testId => {
-    const distributedGroup = sessionStorage.getItem("distributedGroup");
+  window.addEventListener("popstate", handlePageVisit);
+  window.addEventListener("click", handleConversions);
 
-    if (!distributedGroup) {
-      throw new Error("그룹이 분배되지 않았습니다.");
+  const originalPushState = history.pushState;
+  const originalReplaceState = history.replaceState;
+
+  history.pushState = function (...args) {
+    originalPushState.apply(this, args);
+    handlePageVisit();
+  };
+
+  history.replaceState = function (...args) {
+    originalReplaceState.apply(this, args);
+    handlePageVisit();
+  };
+
+  async function handlePageVisit() {
+    const targetTestConfig = findTestConfigIndex();
+
+    if (!targetTestConfig) {
+      return;
     }
+
+    await trackPagePathVisit(targetTestConfig);
+  }
+
+  async function handleConversions(e) {
+    const targetTestConfig = findTestConfigIndex();
+
+    if (!targetTestConfig) {
+      return;
+    }
+
+    if (
+      e.target.id !== targetTestConfig.targetElementId ||
+      !e.target.classList.contains(targetTestConfig.targetElementId)
+    ) {
+      return;
+    }
+
+    await trackConversions(targetTestConfig);
+  }
+
+  async function trackPagePathVisit(testConfig) {
+    const { testId } = testConfig;
 
     try {
       await updateSpecimenStatisticsByAction(testId, {
-        type: "increase",
-        targetProperty: "conversionsSize",
+        type: "visitation",
+        value: 1,
+      });
+    } catch (error) {
+      console.error(
+        "페이지 방문 통계 수집 과정 중 에러가 발생하였습니다.",
+        error,
+      );
+    }
+  }
+
+  async function trackConversions(testConfig) {
+    const { testId } = testConfig;
+
+    try {
+      await updateSpecimenStatisticsByAction(testId, {
+        type: "conversion",
         value: 1,
       });
     } catch (error) {
       console.error("전환 이벤트 추적 과정 중 에러가 발생하였습니다.", error);
     }
-  };
+  }
 
-  abtiClient.getDistributedGroup = () => {
-    try {
-      const distributedGroup = sessionStorage.getItem("distributedGroup");
+  function findTestConfigIndex() {
+    const abtiTestConfig = abtiClient.testConfiguration;
+    const { origin, pathname } = window.location;
 
-      if (!distributedGroup) {
-        throw new Error("그룹이 분배되지 않았습니다.");
-      }
+    const testConfigIndex = abtiTestConfig.findIndex(testInfo => {
+      const { pagePath, pageOrigin } = testInfo;
 
-      return distributedGroup;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      return pageOrigin === origin && pagePath === pathname;
+    });
 
-  function getHashValue(str, max) {
-    let hash = 0;
+    return abtiTestConfig[testConfigIndex];
+  }
 
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash << 5) + hash + str.charCodeAt(i);
-      hash = hash & hash;
-      hash = Math.abs(hash);
-    }
+  async function processAbtiInitialization(testIdQueue) {
+    abtiClient.distributedGroup = await fetchUserConfiguration();
+    abtiClient.testConfiguration = await fetchTestConfigurations(testIdQueue);
+  }
 
-    return hash % max;
+  async function fetchTestConfigurations(testIdQueue) {
+    const requestTasks = testIdQueue.map(testId => {
+      console.log(testId);
+      return sendHttpRequestToAbti("GET", `/abti/tests/${testId}`);
+    });
+
+    const responses = await Promise.allSettled(requestTasks);
+
+    return responses.map(res => {
+      return res.value;
+    });
+  }
+
+  async function fetchUserConfiguration() {
+    const { distributedGroup } = await sendHttpRequestToAbti(
+      "GET",
+      `/abti/users/configuration`,
+    );
+
+    return distributedGroup;
   }
 
   async function updateSpecimenStatisticsByAction(testId, action) {
-    const abtiUserId = sessionStorage.getItem("abtiUserInfo");
-
     return await sendHttpRequestToAbti(
       "PATCH",
-      `/abti/tests/${testId}/specimenStatistics`,
+      `/abti/tests/${testId}/specimen-statistics`,
       {
-        groupName: sessionStorage.getItem("distributedGroup"),
+        groupName: abtiClient.distributedGroup,
         action,
       },
     );
   }
 
   async function sendHttpRequestToAbti(method, endpoint, data) {
-    return await fetch(`${ABTI_SERVER_ORIGIN}${endpoint}`, {
+    const response = await fetch(`${ABTI_SERVER_ORIGIN}${endpoint}`, {
       method: method,
+      credentials: "include",
       headers: {
         "Access-Control-Allow-Origin": window.origin,
         "Content-type": "application/json",
       },
       body: data ? JSON.stringify(data) : null,
     });
+
+    return await response.json();
   }
 })();
