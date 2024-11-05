@@ -39,9 +39,6 @@ exports.increaseSpecimenStatisticsByGroupName = async ({
     return participant.userId === abtiUserId;
   });
 
-  console.log(abtiUserId);
-  console.log(foundTest);
-
   const targetGroup = foundTest.specimenStatistics.find(element => {
     return element.groupName === groupName;
   });
