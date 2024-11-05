@@ -9,7 +9,7 @@ const {
   getExpirationDate,
   validationUserId,
 } = require("../utils/abtiUtil");
-const { SERVER_DOMAIN } = require("./constants/config");
+const { SERVER_DOMAIN } = require("../constants/config");
 
 exports.getAbtiClientCode = async (req, res, next) => {
   const projectUrl = req.get("origin");
