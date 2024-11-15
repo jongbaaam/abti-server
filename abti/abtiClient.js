@@ -51,7 +51,7 @@
     }
 
     if (
-      e.target.id !== targetTestConfig.targetElementId ||
+      e.target.id !== targetTestConfig.targetElementId &&
       !e.target.classList.contains(targetTestConfig.targetElementId)
     ) {
       return;
@@ -83,6 +83,7 @@
       await updateSpecimenStatisticsByAction(testId, {
         type: "conversion",
         value: 1,
+        conversionDt: new Date().toISOString(),
       });
     } catch (error) {
       console.error("전환 이벤트 추적 과정 중 에러가 발생하였습니다.", error);
@@ -109,7 +110,6 @@
 
   async function fetchTestConfigurations(testIdQueue) {
     const requestTasks = testIdQueue.map(testId => {
-      console.log(testId);
       return sendHttpRequestToAbti("GET", `/abti/tests/${testId}`);
     });
 
