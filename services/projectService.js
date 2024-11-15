@@ -1,4 +1,5 @@
 const Project = require("../model/Project");
+const Test = require("../model/Test");
 
 exports.registerProjectByUserId = async ({
   userId,
@@ -15,6 +16,14 @@ exports.registerProjectByUserId = async ({
   }).save();
 
   return registeredProject;
+};
+
+exports.deleteProjectByProjectId = async projectId => {
+  await Project.findByIdAndDelete(projectId);
+
+  await Test.deleteMany({
+    projectId,
+  });
 };
 
 exports.getProjectListByUserId = async userId => {

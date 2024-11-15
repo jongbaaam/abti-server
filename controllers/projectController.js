@@ -33,6 +33,18 @@ exports.registerProjectByUserId = async (req, res, next) => {
   }
 };
 
+exports.deleteProjectByUserId = async (req, res, next) => {
+  try {
+    const { projectId } = req.params;
+
+    await projectService.deleteProjectByProjectId(projectId);
+
+    res.json({ message: "해당 프로젝트가 정상적으로 삭제되었습니다." });
+  } catch (error) {
+    next(ERROR_CASE.SERVER_ERROR);
+  }
+};
+
 exports.validateProjectUrl = async (req, res) => {
   try {
     const { projectUrl } = req.query;

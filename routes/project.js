@@ -16,9 +16,16 @@ router.post(
   projectController.registerProjectByUserId,
 );
 
+router.delete(
+  "/:userId/projects/:projectId",
+  isLoggedIn,
+  projectController.deleteProjectByUserId,
+);
+
 router.get(
   "/project/url-validation",
   isLoggedIn,
   projectController.validateProjectUrl,
 );
+
 module.exports = router;
