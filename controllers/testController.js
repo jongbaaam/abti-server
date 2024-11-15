@@ -77,9 +77,7 @@ exports.updateSpecimenStatisticsByTrackType = async (req, res, next) => {
         action,
       });
 
-    res.status(200).json({
-      message: resultMessage,
-    });
+    res.status(200).json(resultMessage);
   } catch (error) {
     next(ERROR_CASE.SERVER_ERROR);
   }

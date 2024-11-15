@@ -35,7 +35,7 @@ exports.increaseSpecimenStatisticsByGroupName = async ({
   groupName,
   action,
 }) => {
-  const { type, value } = action;
+  const { type, value, conversionDt } = action;
   const foundTest = await Test.findById(testId);
   let targetProperty;
 
@@ -72,6 +72,7 @@ exports.increaseSpecimenStatisticsByGroupName = async ({
       }
 
       targetParticipant.isConversions = true;
+      targetParticipant.conversionDt = conversionDt;
       targetProperty = "conversionsSize";
       break;
 

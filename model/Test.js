@@ -35,6 +35,9 @@ const testParticipantsSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  conversionDt: {
+    type: Date,
+  },
 });
 
 const testSchema = new mongoose.Schema({
@@ -45,7 +48,6 @@ const testSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
     trim: true,
   },
   targetElementId: {
