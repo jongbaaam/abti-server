@@ -16,6 +16,12 @@ router.get(
   testController.getTestByTestId,
 );
 
+router.delete(
+  "/:userId/projects/:projectId/tests/:testId",
+  isLoggedIn,
+  testController.deleteTestByTestId,
+);
+
 router.post(
   "/:userId/projects/:projectId/tests",
   isLoggedIn,

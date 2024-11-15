@@ -25,6 +25,10 @@ exports.createTestByProjectId = async ({ projectId, testFormData }) => {
   return createdTest;
 };
 
+exports.deleteTestByTestId = async testId => {
+  await Test.findByIdAndDelete(testId);
+};
+
 exports.increaseSpecimenStatisticsByGroupName = async ({
   testId,
   abtiUserId,

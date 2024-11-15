@@ -47,6 +47,18 @@ exports.createTestByProjectId = async (req, res, next) => {
   }
 };
 
+exports.deleteTestByTestId = async (req, res, next) => {
+  const { testId } = req.params;
+
+  try {
+    await testService.deleteTestByTestId(testId);
+
+    res.json({ message: "해당 테스트가 정상적으로 삭제되었습니다." });
+  } catch (error) {
+    next(ERROR_CASE.SERVER_ERROR);
+  }
+};
+
 exports.updateSpecimenStatisticsByTrackType = async (req, res, next) => {
   const { testId } = req.params;
   const { groupName, action } = req.body;
