@@ -1,5 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
+const fs = require("fs");
+const UglifyJS = require("uglify-js");
 
 const projectService = require("../services/projectService");
 
@@ -11,6 +13,17 @@ const {
 } = require("../utils/abtiUtil");
 const { SERVER_DOMAIN } = require("../constants/config");
 
+const { code, error } = UglifyJS.minify({
+  "abtiClient.js": fs.readFileSync(
+    path.join(__dirname, "../abti/abtiClient.js"),
+    "utf8",
+  ),
+});
+
+if (error) {
+  throw new Error(error);
+}
+
 exports.getAbtiClientCode = async (req, res, next) => {
   const projectUrl = req.get("origin");
 
@@ -19,13 +32,14 @@ exports.getAbtiClientCode = async (req, res, next) => {
 
   if (!isValidationUrl) {
     next(ERROR_CASE.INVALID_PROJECT);
-
     return;
   }
 
-  res.sendFile("abtiClient.min.js", {
-    root: path.join(__dirname, "../abti"),
+  res.set({
+    "Content-Type": "application/javascript",
   });
+
+  res.send(code);
 };
 
 exports.getUserConfigurationByAbtiUserId = async (req, res, next) => {
