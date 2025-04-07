@@ -41,8 +41,6 @@
   - [2-1. 스크립트의 안정적인 실행 환경을 위한 코드 난독화](#2-1-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%9D%98-%EC%95%88%EC%A0%95%EC%A0%81%EC%9D%B8-%EC%8B%A4%ED%96%89-%ED%99%98%EA%B2%BD%EC%9D%84-%EC%9C%84%ED%95%9C-%EC%BD%94%EB%93%9C-%EB%82%9C%EB%8F%85%ED%99%94)
   - [2-2. 웹 성능 최적화를 고려한 HTTP 캐싱](#2-2-%EC%9B%B9-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%9C-http-%EC%BA%90%EC%8B%B1)
 
-[회고](#%ED%9A%8C%EA%B3%A0)
-
 <!-- tocstop -->
 
 <br>
